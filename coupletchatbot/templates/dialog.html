@@ -1,0 +1,233 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>dialog</title>
+	
+	<link href="{% static 'plugins/bootstrap-4.5.0-dist/css/bootstrap.min.css' %}" rel="stylesheet">
+	<link href="{% static 'plugins/bootstrap-4.5.0-dist/css/style.css' %}" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="{% static 'plugins/assets/waifu.css' %}"/>
+	<link rel="stylesheet" href="{% static 'css/litewebchat.css' %}">
+	<style>
+		html,body{
+			height: 100%;
+			margin: 0;
+			padding: 50px;
+			background-color: #f5f5f5;
+		}
+	</style>
+  </head>
+  <body style="overflow-y:hidden">
+    <div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="row">
+				<div class="col-md-2">
+					<div class="waifu">
+						<div class="waifu-tips"></div>
+						<canvas id="live2d" class="live2d"></canvas>
+					</div>
+				</div>
+				<div class="col-md-9">
+					<!-- 聊天区域 -->
+					<div class="lite-chatbox">
+						<div style="height: 90px;"></div>
+						<div class="cleft cmsg">
+							<div class="content">
+								小朋友你好，有什么问题吗？
+							</div>	
+						</div>
+						<div class="cright cmsg">
+							<img class="headIcon radius" ondragstart="return false;"  oncontextmenu="return false;"  src="{% static 'img\User_1.jpg' %}" />
+							<span class="name">&nbsp;</span>
+							<div class="content">
+								【请在下方的文本框输入内容来和chatbot对话吧】
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-2 ">
+			<br><br>
+			<button type="button" id="perslcenter" class="btn btn-outline-success btn-block">
+				<font style="vertical-align: inherit;">
+					<font style="vertical-align: inherit;">
+						个人中心
+					</font>
+				</font>
+			</button> 
+			<button type="button" id="coupus" class="btn btn-outline-success btn-block">
+				<font style="vertical-align: inherit;">
+					<font style="vertical-align: inherit;">
+						语料管理
+					</font>
+				</font>
+			</button>
+		</div>
+		<div class="col-md-8">
+			<br>
+			<div class="card">
+				<div class="card-cody">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="input-group">
+								<input id="input" type="text" class="form-control"  style="padding-bottom: 20%;">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-1">
+			<br><br>
+			<button id="clear" type="button" class="btn btn-outline-success btn-block">
+				<font style="vertical-align: inherit;">
+					<font style="vertical-align: inherit;">
+						清空  
+					</font>
+				</font>
+			</button>
+			<button id="send" type="button" class="btn btn-outline-success btn-block">
+				<font style="vertical-align: inherit;">
+					<font style="vertical-align: inherit;">
+						发送  
+					</font>
+				</font>
+			</button>
+		</div>
+	</div>
+	<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-backdrop="static">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+		  <div class="modal-content">
+			<div class="modal-header">
+			  <h6 class="modal-title" id="exampleModalCenterTitle">✧( ु•⌄• )◞</h6>
+			  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			  </button>
+			</div>
+			<div class="modal-body" id="modalBody">
+				<div id="manyima">对话已结束，您对本次对话满意吗？</div>
+				<br>
+				<div id="star" data-score="4"></div>
+				<div class="modal-footer" height="10px" style="display: none;" id="manyi_footer"> 
+					<button type="button" class="btn btn-secondary" data-dismiss="modal" id="continue">再来五毛</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" id="back">下次一定</button>
+				</div>
+				<div class="modal-footer" height="10px" style="display: none;" id="shengqi_footer"> 
+					<button type="button" class="btn btn-secondary" data-dismiss="modal" id="nohelp">残忍拒绝</button> 
+					<button type="button" class="btn btn-primary" data-dismiss="modal" id="help">欣然前往</button> 
+				</div>
+			</div>
+		  </div>
+		</div>
+	</div>
+</div>
+	<script src="{% static 'plugins/bootstrap-4.5.0-dist/js/jquery.min.js' %}"></script>
+	<script src="{% static 'plugins/bootstrap-4.5.0-dist/js/popper.min.js' %}"></script>
+	<script src="{% static 'plugins/bootstrap-4.5.0-dist/js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'plugins/jquery.raty.js' %}"></script>
+	<script src="{% static 'plugins/assets/waifu-tips.js' %}"></script>
+	<script src="{% static 'plugins/assets/live2d.js' %}"></script>
+	<script src="{% static 'plugins/assets/autoload.js' %}"></script>
+	<script type="text/javascript">
+		live2d_settings['modelId'] = 2;
+		live2d_settings['modelTexturesId'] = 84;
+		initModel("../../static/plugins/assets/waifu-tips.json")
+
+		//modal测试
+		$("#coupus").on('click',function(){
+			//debugger;
+			$('#modal').modal('show');
+		});
+		//用户打分
+		$('#star').raty({
+			size: 24,
+			starOff: '../../static/plugins/img/star-off-big.png',
+			starOn : '../../static/plugins/img/star-on-big.png',
+			click:function(score){
+				$("#star").remove();
+				if(score >= 4){//用户满意
+					$("#manyima").html('您还要继续对话吗？<br/><br/>');
+					$("#manyi_footer").attr("style","display:block");
+				}
+				else{
+					$("#manyima").html('您愿意给我们一点建议吗？<br/><br/>');
+					$("#shengqi_footer").attr("style","display:block");
+				}
+			}
+		});
+		//打分后跳转
+		$("#help").on('click',function(){//进入对联修改界面
+			$("#modal").on('hidden.bs.modal',function(){
+				$(location).attr("href","/change/");
+			});
+		})
+		$("#nohelp").on('click',function(){//不提建议，返回登陆界面
+			$(location).attr("href","/index/")
+		})
+		$("#continue").on('click',function(){//对话继续，刷新页面
+			location.reload();
+		})
+		$("#back").on('click',function(){//返回登陆界面
+			$(location).attr("href","/index/");
+		})
+		//用户操作
+		$("#clear").on('click',function(){
+			$("#input").val("");
+		})
+		//发送消息
+		$("#send").on('click',function(){
+			text= $("#input").val();
+			var mydate = new Date();
+			var mytime=mydate.toLocaleTimeString();
+			$(".lite-chatbox").append('<div class="cright cmsg"><img class="headIcon radius" ondragstart="return false;"  oncontextmenu="return false;"  src="../../static/img/User_1.jpg" /><span class="name">&nbsp;</span><div class="content">'+text+'</div></div>');
+			$(".lite-chatbox").scrollTop($(".lite-chatbox")[0].scrollHeight);//滚动条保持在底端
+
+			$.getJSON("/input/", {'text': text}, function(res){
+				$(".lite-chatbox").append('<div class="cleft cmsg"><div class="content">'+res.text+'</div></div>');
+				if(res.intent == 'goodbye'){
+					$('#modal').modal('show');
+				}
+				$(".lite-chatbox").scrollTop($(".lite-chatbox")[0].scrollHeight);
+			})
+		})
+		
+		//页面跳转
+		$("#perslcenter").on('click',function(){
+			$(location).attr("href","/corpus/")
+		})
+
+		$("#corpus").on('click',function(){
+			$(location).attr("href","/corpus/")
+		})
+
+		//无操作计时
+		var maxTime = 300; // seconds
+		var time = maxTime;
+		$('body').on('keydown mousemove mousedown', function(e) {
+			time = maxTime; // reset
+		});
+		var intervalId = setInterval(function() {
+			time--;
+			if (time <= 0) {
+				ShowInvalidLoginMessage();
+				clearInterval(intervalId);
+			}
+		}, 1000)
+		function ShowInvalidLoginMessage() {
+			$('#modal').modal('show');
+			//TODO 做需要做的操作
+			//exp:关闭页面
+			//这里加入评价界面
+		}
+    </script>
+  </body>
+</html>

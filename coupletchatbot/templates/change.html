@@ -1,0 +1,132 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <title></title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'plugins\bootstrap-4.5.0-dist\css\bootstrap.min.css' %}" >
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.0/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" href="{% static 'plugins\bootstrap-4.5.0-dist\css\bootstrap-editable.css' %}">
+    <style>
+        html,body{
+  height: 100%;
+  margin: 0;
+  padding:40px ;
+  }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+                <table class="table table-condensed table-hover"
+                    id="table"
+                    data-toggle="table"
+                    data-toolbar="#toolbar"
+                    data-height="400" >
+                    <thead class="thead-light">
+                        <tr>
+                            <th data-field="id" width="50px">ID</th>
+                            <th data-field="left">上联</th>
+                            <th data-field="right">下联</th>
+                            <th data-field="status" width="100px">状态</th>
+                        </tr>
+                    </thead>
+                </table>
+	</div>
+
+    <!-- Optional JavaScript -->
+    <script src="{% static 'plugins\bootstrap-4.5.0-dist\js\jquery.min.js' %}" ></script>
+    <script src="{% static 'plugins\bootstrap-4.5.0-dist\js\popper.min.js' %}" ></script>
+    <script src="{% static 'plugins\bootstrap-4.5.0-dist\js\bootstrap.min.js' %}"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.18.0/dist/bootstrap-table.min.js"></script>
+    <script src="{% static 'plugins\bootstrap-4.5.0-dist\js\bootstrap-editable.min.js' %}"></script>
+    <script src="{% static 'plugins\bootstrap-4.5.0-dist\js\bootstrap-table-editable.js' %}"></script>
+    <script type="text/javascript">
+    	//查询cookie，获取用户id
+		function getCookie(name) {
+ 			var cookies = document.cookie;
+ 			var list = cookies.split("; ");    // 解析出名/值对列表
+      
+ 			for(var i = 0; i < list.length; i++) {
+ 				var arr = list[i].split("=");   // 解析出名和值
+ 				if(arr[0] == name)
+					return decodeURIComponent(arr[1]);   // 对cookie值解码
+ 			} 
+		return "";
+		}
+		var user_id = getCookie("userid");
+
+    $("#back").on('click',function(){
+			$(location).attr("href","/index/");
+		})
+        //表格渲染
+        $("#table").bootstrapTable({
+            url:'../../static/js/db/getUsercorpus/'+user_id,//url获取数据
+            method:'get',//方法 
+            contentType:'application/json',//发送到后端的数据编码类型
+            dataType:'json',//后端返回的数据类型
+            cache:false,//缓存
+            pagination:true,//分页
+            sidePagination:'client',//指定在前端客户端分页
+            pageNumber:1,//页号
+            pageSize:10,//页面数据条数
+            pageList:[10,20,30,40,50],//分页列表
+            uniqueId:'table',//唯一id
+            toolbar:'#toolbar',//工具栏
+            showColumns:false,//显示选择列
+            showRefresh:false,//显示刷新按钮
+            showToggle:false,//显示切换视图：列表和详情视图切换
+            search:false,//显示搜索框
+            columns:[
+                {checkbox:true},
+                {field:'id',title:'ID',},
+                {field:'first_couplet',title:'上联',align:'center',
+                editable:{
+                    type:'text',
+                    title:'上联',
+                    validate:function(value){
+                        if(!value){
+                            return '不能为空！';
+                        }
+                    }
+                }
+                },
+                {field:'second_couplet',title:'下联',align:'center',
+                editable:{
+                    type:'text',
+                    title:'下联',
+                    validate:function(value){
+                        if(!value){
+                            return '不能为空！';
+                        }
+                    }
+                }
+                },
+            ],
+            //编辑单元格后保存。
+            //field 编辑的字段
+            //row   编辑的当前行
+            //oldValue  编辑前元素的值。
+            onEditableSave: function (field, row, oldValue, $el) {
+                var timestamp = (new Date()).getTime();//获取当前时间戳
+                $.ajax({
+                    url:'../../static/js/db/saveUsercorpus',
+                    method:"POST",
+                    dataType:"json",
+                    data:{
+                        left:field.left,
+                        right:field.right,
+                        timestamp:timestamp,
+                    },
+                    success:function(res){//这里不需要页面做出改变
+                        console.log(res);
+                    }
+                })
+            }
+        });   
+    </script>
+  </body>
+</html>

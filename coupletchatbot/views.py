@@ -6,12 +6,16 @@ from django.contrib.auth.hashers import make_password
 from . import forms
 from . import models
 from . import process
-import os
-
+import uuid
+import json
 
 def index(request):
-    pass
-    return render(request, 'index.html')
+    print(request.COOKIES.get('userid'))
+    status = request.COOKIES.get('userid')
+    if not status:
+        return render(request, 'index.html')
+    else:
+        return redirect('/dialog/')
 
 def login(request):
     if request.method == 'POST':
@@ -22,7 +26,10 @@ def login(request):
             try:
                 user = models.User.objects.get(email=email)
                 if password == user.password:
-                    return redirect('/index/')
+                    rep = redirect('/index/')
+                    rep.set_cookie('userid', user.userid)
+                    request.session[user.userid] = str(uuid.uuid1())
+                    return rep
                 else:
                     print(user.password)
                     print(make_password(password))
@@ -66,15 +73,29 @@ def register(request):
     return render(request, 'register.html', locals())
 
 def input(request):
+    intent = '' 
     if request.is_ajax():
-        ajax_string = process.processSentence(request.GET["sentence"])
+        userid = request.COOKIES.get('userid')
+        sessionid = request.session.get(userid)
+        if sessionid == None:
+            request.session[userid] = str(uuid.uuid1())
+            sessionid = request.session.get(userid)     
+        ajax_string, intent = process.processSentence(request.GET["text"], userid, sessionid)
+        print(ajax_string, intent)
+        if intent == 'goodbye':
+            del request.session[userid]
     else:
         ajax_string = 'not ajax request'
-    resp = HttpResponse(ajax_string)
+    return_dict = {'text':ajax_string, 'intent':intent}
+    resp = HttpResponse(json.dumps(return_dict),content_type='application/json')
     return resp
 
 def dialog(request):
     pass
-    return render(request, 'ajax.html')
+    return render(request, 'dialog.html')
+
+def change(request):
+    pass
+    return render(request, 'change.html')
 
 

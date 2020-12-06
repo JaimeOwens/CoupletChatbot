@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title></title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="plugins\bootstrap-4.5.0-dist\css\bootstrap.min.css" >
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.0/dist/bootstrap-table.min.css">
+    <style>
+        html,body{
+  height: 100%;
+  margin: 0;
+  padding:40px ;
+  }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+		
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" id="persl-tab" data-toggle="tab" href="#persl" role="tab" aria-controls="persl" aria-selected="true">个人信息</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="corpus-tab" data-toggle="tab" href="#corpus" role="tab" aria-controls="corpus" aria-selected="true">语料管理</a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane active" id="persl" role="tabpanel" aria-labelledby="persl-tab">
+                    <div class="row">
+                        <div class="col-md-8 offset-2">
+                            <br><br><br>
+                    <form class="form" action="#">
+                        <!-- 表单区域-->
+                            <div class="form-group row">
+                                <label for="userid" class="col-sm-2 col-form-label">Userid</label>
+                                <div class="col-sm-10">
+                                  <input type="text" class="form-control" id="userid" disabled>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group row">
+                                <label for="email" class="col-sm-2 col-form-label">Email</label>
+                                <div class="col-sm-10">
+                                  <input type="email" class="form-control" id="email" disabled>
+                                </div>
+                            </div>
+    
+                            <div class="form-group row">
+                                <label for="password" class="col-sm-2 col-form-label">Password</label>
+                                <div class="col-sm-10">
+                                  <input type="text" class="form-control" id="password">
+                                </div>
+                            </div>
+    
+                            <div class="form-group row">
+                                <label for="username" class="col-sm-2 col-form-label">Username</label>
+                                <div class="col-sm-10">
+                                  <input type="text" class="form-control" id="username">
+                                </div>
+                            </div>
+                            <br><br><br><br>
+                            <div class="form-group row">
+                                <div class="col-md-6 offset-9" id="button_group">
+                                    <button type="button" id="change" class="btn btn-primary mb-2">Change</button>
+                                    <button type="button" id="back" class="btn btn-primary mb-2">Back</button>
+                                </div>
+                            </div>
+                    </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="corpus" role="tabpanel" aria-labelledby="corpus-tab">
+                    <table class="table table-condensed table-hover"
+                    id="table"
+                    data-toggle="table"
+                    data-toolbar="#toolbar"
+                    data-height="400" >
+                    <thead class="thead-light">
+                        <tr>
+                            <th data-field="id" width="50px">ID</th>
+                            <th data-field="left">上联</th>
+                            <th data-field="right">下联</th>
+                            <th data-field="status" width="100px">状态</th>
+                        </tr>
+                    </thead>
+                    </table>
+                </div>
+            </div>
+	</div>
+
+
+    <!-- Optional JavaScript -->
+    <script src="plugins\bootstrap-4.5.0-dist\js\jquery.min.js" ></script>
+    <script src="plugins\bootstrap-4.5.0-dist\js\popper.min.js" ></script>
+    <script src="plugins\bootstrap-4.5.0-dist\js\bootstrap.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.18.0/dist/bootstrap-table.min.js"></script>
+    <script type="text/javascript">
+    //查询cookie，获取用户id
+		function getCookie(name) {
+ 			var cookies = document.cookie;
+ 			var list = cookies.split("; ");     // 解析出名/值对列表
+      
+ 			for(var i = 0; i < list.length; i++) {
+ 				var arr = list[i].split("=");   // 解析出名和值
+ 				if(arr[0] == name)
+					return decodeURIComponent(arr[1]);   // 对cookie值解码
+ 			}
+		return "";
+		}
+        var user_id = getCookie("userid");
+        
+    $.ajax({//开局获取用户个人信息
+        url:'/jd/db/userQuery'+ user_id,    
+        method:'GET',
+        error:function(){
+            alert("ERROR:获取用户信息错误")
+        },
+        success:function(result){
+            $("#userid").val(user_id);
+            $("#eamil").val(result.eamil);
+            $("#username").val(result.username);
+            $("#password").val(result.password);
+        }
+    })
+    $("#change").on('click',function(){//用户修改信息
+        $(this).remove()
+        $("#button_group").prepend('<button type="submit" id="confirm" class="btn btn-primary mb-2">Confirm</button>')
+    })
+    $("#confirm").on('click',function(){
+        var password = $("#password").val();
+        var username = $("#username").val();
+        if(password = ""){
+            alert("密码不能为空");
+        }
+        if(username = ""){
+            alert("用户名不能为空");
+        }
+        $.ajax({
+            url:'/js/db/userChange',
+            data:{
+                username:username,
+                password:password,
+                user_id = user_id,
+            },
+            dataType:"JSON",
+            method:"POST",
+            success:function(res){
+                if(res==0){//插入错误
+                    alert("ERROR")
+                }
+                else{
+                    alert("success")
+                    $("#password").val(password);
+                    $("#username").val(username);
+                }
+                
+            }
+
+        })
+        
+    })
+    //查询对话记录
+    $("#back").on('click',function(){
+			$(location).attr("href","Index.html")
+        })
+        $(function(){
+                //表格渲染
+        $("#table").bootstrapTable({
+            url:'/js/db/getUsercorpus'+user_id,//url获取数据
+            method:'GET',//方法
+            cache:false,//缓存
+            pagination:true,//分页
+            sidePagination:'client',//指定在前端客户端分页
+            pageNumber:1,//页号
+            pageSize:10,//页面数据条数
+            pageList:[10,20,30,40,50],//分页列表
+            uniqueId:'table',//唯一id
+            toolbar:'#toolbar',//工具栏
+            showColumns:false,//显示选择列
+            showRefresh:false,//显示刷新按钮
+            showToggle:false,//显示切换视图：列表和详情视图切换
+            search:false,//显示搜索框
+            columns:[
+                {checkbox:true},
+                {field:'id',title:'ID',},
+                {field:'first_couplet',title:'上联',align:'center'},
+                {field:'second_couplet',title:'下联',align:'center'},
+                {field:'status',title:'状态',align:'center',
+                    formatter:function(value,row,index){//根据value值设置通过状态
+                        if(value){
+                            return '已通过';
+                        }else{
+                            return '未通过';
+                        }
+                    }},
+            ]
+            })
+        })
+    </script>
+  </body>
+</html>
