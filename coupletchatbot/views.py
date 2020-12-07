@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.contrib.auth.hashers import make_password
 from . import forms
 from . import models
-from . import process
+from . import util
 import uuid
 import json
 
@@ -80,7 +80,7 @@ def input(request):
         if sessionid == None:
             request.session[userid] = str(uuid.uuid1())
             sessionid = request.session.get(userid)     
-        ajax_string, intent = process.processSentence(request.GET["text"], userid, sessionid)
+        ajax_string, intent = util.processSentence(request.GET["text"], userid, sessionid)
         print(ajax_string, intent)
         if intent == 'goodbye':
             del request.session[userid]

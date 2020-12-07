@@ -53,9 +53,11 @@
  			for(var i = 0; i < list.length; i++) {
  				var arr = list[i].split("=");   // 解析出名和值
  				if(arr[0] == name)
-					return decodeURIComponent(arr[1]);   // 对cookie值解码
+                    // return decodeURIComponent(arr[1]);   // 对cookie值解码
+                    print(arr[0], arr[1]);
+                    return arr[1];
  			} 
-		return "";
+            return "";
 		}
 		var user_id = getCookie("userid");
 

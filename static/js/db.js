@@ -43,9 +43,9 @@ function userChange(data){
 }
 
 //用户查询一轮对联记录
-var getUsercorpus = function(user_id){
+function getUsercorpus(user_id){
   //查询用户一轮对话的uuid
-  var uuidsql="SELECT uuid FROM Corpus WHERE userid="+user_id+"limit 1 orderby desc";
+  var uuidsql="SELECT uuid FROM Corpus WHERE userid="+user_id+" limit 1 order by id desc";
   connection.query(uuidsql, function (err, result){
     if (err) {
       return console.error(err.message);
@@ -71,15 +71,15 @@ var getUsercorpus = function(user_id){
 }
 
 //用户修改对联记录
-var saveUsercorpus = function(data){
+function saveUsercorpus(data){
   var saveSql='UPDATE Corpus SET first_couplet = ?,second_couplet = ?,status=False WHERE uuid=? AND userid=? AND timestamp = ?';
   var SqlParams = [data.first_couplet,data.second_couplet,status,uuid,user_id,data.timestamp];
   connection.query(saveSql,SqlParams,function(err){
     if(err){
       console.log('insert err',err.message);
       return;
-  }
-  console.log('insert success');
+    }
+    console.log('insert success');
   });
   return res='success';
 }
@@ -100,5 +100,3 @@ function getAllcorpus(user_id){
   });
   return Allusercorpus;
 }
-
-

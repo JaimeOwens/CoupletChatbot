@@ -1,4 +1,5 @@
-from coupletchatbot.models import Corpus
+from coupletchatbot.models import Corpus, User
+from django.core import serializers
 from urllib import parse,request
 import requests
 import datetime
@@ -67,5 +68,12 @@ def processSentence(raw_string, userid, sessionid):
     
     return answer, intent
     
-    
-    
+def getBLEUandROUGH(couplet):
+    response = request.Request(url='%s%s%s' % (coupletURL,'?', couplet), headers=headers)
+    response = request.urlopen(response)
+    response = response.read()
+    result = response.decode('utf8')
+    result.split('#')
+    bleu = float(result[0])
+    rough = float(result[1])
+    return bleu, rough
