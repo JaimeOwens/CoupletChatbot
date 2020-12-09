@@ -2,6 +2,7 @@ from django.test import TestCase
 import json
 import random
 from . import util
+import xlwt
 
 
 dialogs = {
@@ -20,17 +21,23 @@ dialogs = {
 }
 
 class CoupletTestCase(TestCase):
-    def getTestData(self):
+    def __init__(self, methodName: str) -> None:
+        super().__init__(methodName=methodName)
         with open('testdata/300.json', 'r', encoding='utf8') as fp:
-            self.jsondata = json.loads(fp.read())
+            self.jsondata = json.loads(fp.read())     
 
     def splitPoetry(self,content):
         content = content.split()
         couplet = content[random.randint(0, len(content)-1)]
+        print(couplet)
         couplet = couplet.split('，')
-        first_couplet = couplet[0]
-        second_couplet = couplet[1].strip('。')
-        couplet = first_couplet + '&' + second_couplet
+        if len(couplet) == 2:
+            first_couplet = couplet[0]
+            second_couplet = couplet[1]
+            second_couplet = second_couplet[:-1]
+            couplet = first_couplet + '&' + second_couplet
+        else:  
+            couplet = "苔痕上阶绿&草色入帘青"
         return couplet
 
     def getTestCouplet(self):
@@ -45,13 +52,32 @@ class CoupletTestCase(TestCase):
         return dialog, intent
 
     def testAccuracy(self):
-        dialog, intent = self.getDialog()
-        couplet = self.getTestCouplet()
-        _, intent_return = util.getCoupletRight(dialog)
-        self.assertEqual(intent, intent_return)
-        bleu, rough = util.getBLEUandROUGH(couplet)
-        print(bleu, rough)
+        workbook = xlwt.Workbook(encoding='utf-8')
+        worksheet = workbook.add_sheet('sheet0')
+        for i in range(1000):
+            print(i)
+            dialog, intent = self.getDialog()
+            couplet = self.getTestCouplet()
+            if couplet == "":
+                continue
+            print(dialog, intent, couplet)
+            
+            dialog_return, intent_return = util.getDialogContext(dialog)
+            bleu, rough = util.getBLEUandROUGH(couplet)
+            print(dialog_return, intent_return)
+            print(bleu, rough)
 
+            worksheet.write(i, 0, dialog)
+            worksheet.write(i, 1, dialog_return)
+            worksheet.write(i, 2, intent)
+            worksheet.write(i, 3, intent_return)
+            worksheet.write(i, 4, couplet)
+            worksheet.write(i, 5, bleu)
+            worksheet.write(i, 6, rough)
+            
+            self.assertEqual(intent, intent_return)
+
+        workbook.save('testdata/test_result.xlsx')
 
 
         

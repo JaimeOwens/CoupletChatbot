@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
   <head>
@@ -7,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="plugins\bootstrap-4.5.0-dist\css\bootstrap.min.css" >
+    <link rel="stylesheet" href="{% static 'plugins\bootstrap-4.5.0-dist\css\bootstrap.min.css' %}" >
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.0/dist/bootstrap-table.min.css">
     <style>
         html,body{
@@ -95,9 +96,9 @@
 
 
     <!-- Optional JavaScript -->
-    <script src="plugins\bootstrap-4.5.0-dist\js\jquery.min.js" ></script>
-    <script src="plugins\bootstrap-4.5.0-dist\js\popper.min.js" ></script>
-    <script src="plugins\bootstrap-4.5.0-dist\js\bootstrap.min.js"></script>
+    <script src="{% static 'plugins\bootstrap-4.5.0-dist\js\jquery.min.js' %}" ></script>
+    <script src="{% static 'plugins\bootstrap-4.5.0-dist\js\popper.min.js' %}" ></script>
+    <script src="{% static 'plugins\bootstrap-4.5.0-dist\js\bootstrap.min.js' %}"></script>
     <script src="https://unpkg.com/bootstrap-table@1.18.0/dist/bootstrap-table.min.js"></script>
     <script type="text/javascript">
     //查询cookie，获取用户id
@@ -166,7 +167,7 @@
     })
     //查询对话记录
     $("#back").on('click',function(){
-			$(location).attr("href","Index.html")
+			$(location).attr("href","//")
         })
         $(function(){
                 //表格渲染

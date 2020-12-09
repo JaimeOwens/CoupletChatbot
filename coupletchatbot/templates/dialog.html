@@ -167,7 +167,7 @@
 		//打分后跳转
 		$("#help").on('click',function(){//进入对联修改界面
 			$("#modal").on('hidden.bs.modal',function(){
-				$(location).attr("href","/change/");
+				$(location).attr("href","change.html");
 			});
 		})
 		$("#nohelp").on('click',function(){//不提建议，返回登陆界面
@@ -202,11 +202,11 @@
 		
 		//页面跳转
 		$("#perslcenter").on('click',function(){
-			$(location).attr("href","/corpus/")
+			$(location).attr("href","/person/")
 		})
 
 		$("#corpus").on('click',function(){
-			$(location).attr("href","/corpus/")
+			$(location).attr("href","/person/")
 		})
 
 		//无操作计时

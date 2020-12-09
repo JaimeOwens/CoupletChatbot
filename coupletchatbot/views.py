@@ -98,4 +98,7 @@ def change(request):
     pass
     return render(request, 'change.html')
 
+def person(request):
+    pass
+    return render(request, 'person.html')
 
