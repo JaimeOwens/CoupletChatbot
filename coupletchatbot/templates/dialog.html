@@ -43,9 +43,11 @@
 						</div>
 						<div class="cright cmsg">
 							<img class="headIcon radius" ondragstart="return false;"  oncontextmenu="return false;"  src="{% static 'img\User_1.jpg' %}" />
-							<span class="name">&nbsp;</span>
-							<div class="content">
-								【请在下方的文本框输入内容来和chatbot对话吧】
+							<div>
+								<span class="name" id="username" style="padding-right: 100px;"></span>
+								<div class="content">	
+									【请在下方的文本框输入内容来和chatbot对话吧】
+								</div>
 							</div>
 						</div>
 					</div>
@@ -142,6 +144,23 @@
 		live2d_settings['modelTexturesId'] = 84;
 		initModel("../../static/plugins/assets/waifu-tips.json")
 
+		function getCookie(name) {
+        var cookies = document.cookie;
+        var list = cookies.split("; ");     // 解析出名/值对列表
+    
+			for(var i = 0; i < list.length; i++) {
+				var arr = list[i].split("=");   // 解析出名和值
+				if(arr[0] == name)
+					return decodeURIComponent(arr[1]);   // 对cookie值解码
+			}
+        	return "";
+		}
+		var username = getCookie("username");
+		x=document.getElementById('username');
+		x.innerHTML=username;
+		var userid = getCookie("userid")
+		var uuid = getCookie("uuid")
+
 		//modal测试
 		$("#coupus").on('click',function(){
 			//debugger;
@@ -162,12 +181,12 @@
 					$("#manyima").html('您愿意给我们一点建议吗？<br/><br/>');
 					$("#shengqi_footer").attr("style","display:block");
 				}
-			}
+			}	
 		});
 		//打分后跳转
 		$("#help").on('click',function(){//进入对联修改界面
 			$("#modal").on('hidden.bs.modal',function(){
-				$(location).attr("href","change.html");
+				$(location).attr("href","/change/");
 			});
 		})
 		$("#nohelp").on('click',function(){//不提建议，返回登陆界面
@@ -188,7 +207,8 @@
 			text= $("#input").val();
 			var mydate = new Date();
 			var mytime=mydate.toLocaleTimeString();
-			$(".lite-chatbox").append('<div class="cright cmsg"><img class="headIcon radius" ondragstart="return false;"  oncontextmenu="return false;"  src="../../static/img/User_1.jpg" /><span class="name">&nbsp;</span><div class="content">'+text+'</div></div>');
+			$(".lite-chatbox").append('<div class="cright cmsg"><img class="headIcon radius" ondragstart="return false;"  oncontextmenu="return false;"  src="../../static/img/User_1.jpg" /> \
+			<span class="name" id="username">'+username+'</span><div class="content">'+text+'</div></div>');
 			$(".lite-chatbox").scrollTop($(".lite-chatbox")[0].scrollHeight);//滚动条保持在底端
 
 			$.getJSON("/input/", {'text': text}, function(res){

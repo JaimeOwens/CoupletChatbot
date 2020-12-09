@@ -12,10 +12,10 @@
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.0/dist/bootstrap-table.min.css">
     <style>
         html,body{
-  height: 100%;
-  margin: 0;
-  padding:40px ;
-  }
+        height: 100%;
+        margin: 0;
+        padding:40px ;
+    }
     </style>
   </head>
   <body>
@@ -76,20 +76,20 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="corpus" role="tabpanel" aria-labelledby="corpus-tab">
-                    <table class="table table-condensed table-hover"
-                    id="table"
-                    data-toggle="table"
-                    data-toolbar="#toolbar"
-                    data-height="400" >
+                    <div>
+                    <table class="table table-condensed table-hover" id="table">
                     <thead class="thead-light">
                         <tr>
                             <th data-field="id" width="50px">ID</th>
                             <th data-field="left">上联</th>
                             <th data-field="right">下联</th>
                             <th data-field="status" width="100px">状态</th>
+                            <th data-fiels="quality">结果</th>
                         </tr>
                     </thead>
                     </table>
+                    <button type="button" id="back" class="btn btn-primary mb-2" style="float:right;">Back</button>
+                    </div>
                 </div>
             </div>
 	</div>
@@ -102,105 +102,117 @@
     <script src="https://unpkg.com/bootstrap-table@1.18.0/dist/bootstrap-table.min.js"></script>
     <script type="text/javascript">
     //查询cookie，获取用户id
-		function getCookie(name) {
- 			var cookies = document.cookie;
- 			var list = cookies.split("; ");     // 解析出名/值对列表
-      
- 			for(var i = 0; i < list.length; i++) {
- 				var arr = list[i].split("=");   // 解析出名和值
- 				if(arr[0] == name)
-					return decodeURIComponent(arr[1]);   // 对cookie值解码
- 			}
-		return "";
-		}
-        var user_id = getCookie("userid");
+    function getCookie(name) {
+        var cookies = document.cookie;
+        var list = cookies.split("; ");     // 解析出名/值对列表
+    
+        for(var i = 0; i < list.length; i++) {
+            var arr = list[i].split("=");   // 解析出名和值
+            if(arr[0] == name)
+                return decodeURIComponent(arr[1]);   // 对cookie值解码
+        }
+        return "";
+    }
+    var user_id = getCookie("userid");
         
     $.ajax({//开局获取用户个人信息
-        url:'/jd/db/userQuery'+ user_id,    
-        method:'GET',
-        error:function(){
-            alert("ERROR:获取用户信息错误")
+        url:'http://localhost:7744/person.html/userQuery',    
+        method:'POST',
+        data:{
+            user_id:user_id
+        },
+        error:function(err){
+            alert(err.message)
         },
         success:function(result){
+            //debugger;
             $("#userid").val(user_id);
-            $("#eamil").val(result.eamil);
-            $("#username").val(result.username);
-            $("#password").val(result.password);
+            $("#email").val(result[0]['email']);
+            $("#username").val(result[0]['username']);
+            $("#password").val(result[0]['password']);
         }
     })
     $("#change").on('click',function(){//用户修改信息
         $(this).remove()
-        $("#button_group").prepend('<button type="submit" id="confirm" class="btn btn-primary mb-2">Confirm</button>')
+        $("#button_group").prepend('<button type="button" id="confirmbtn" class="btn btn-primary mb-2" onclick="confirm()">Confirm</button>')
+        $("#username").attr('disabled',false)
+        $("#password").attr('disabled',false)
     })
-    $("#confirm").on('click',function(){
-        var password = $("#password").val();
-        var username = $("#username").val();
-        if(password = ""){
-            alert("密码不能为空");
-        }
-        if(username = ""){
-            alert("用户名不能为空");
-        }
-        $.ajax({
-            url:'/js/db/userChange',
-            data:{
-                username:username,
-                password:password,
-                user_id = user_id,
-            },
-            dataType:"JSON",
-            method:"POST",
-            success:function(res){
-                if(res==0){//插入错误
-                    alert("ERROR")
-                }
-                else{
-                    alert("success")
-                    $("#password").val(password);
-                    $("#username").val(username);
-                }
-                
+    function confirm(){
+            var password = $("#password").val();
+            var username = $("#username").val();
+            if(!password){
+                alert("密码不能为空");
             }
+            if(!username){
+                alert("用户名不能为空");
+            }
+            $.ajax({
+                url:'/person.html/userChange',
+                data:{
+                    username:username,
+                    password:password,
+                    user_id:user_id,
+                },
+                dataType:"JSON",
+                method:"POST",
+                success:function(msg){
+                    if(msg==0){//数据库写入错误
+                        alert("ERROR")
+                    }
+                    else{
+                        alert("success")
+                        location.reload();
+                    }
+                    
+                }
 
-        })
-        
-    })
+            })
+    }
     //查询对话记录
     $("#back").on('click',function(){
-			$(location).attr("href","//")
+			$(location).attr("href","/dialog/")
         })
-        $(function(){
                 //表格渲染
         $("#table").bootstrapTable({
-            url:'/js/db/getUsercorpus'+user_id,//url获取数据
             method:'GET',//方法
-            cache:false,//缓存
             pagination:true,//分页
             sidePagination:'client',//指定在前端客户端分页
             pageNumber:1,//页号
             pageSize:10,//页面数据条数
             pageList:[10,20,30,40,50],//分页列表
-            uniqueId:'table',//唯一id
-            toolbar:'#toolbar',//工具栏
-            showColumns:false,//显示选择列
-            showRefresh:false,//显示刷新按钮
-            showToggle:false,//显示切换视图：列表和详情视图切换
-            search:false,//显示搜索框
             columns:[
-                {checkbox:true},
                 {field:'id',title:'ID',},
                 {field:'first_couplet',title:'上联',align:'center'},
                 {field:'second_couplet',title:'下联',align:'center'},
                 {field:'status',title:'状态',align:'center',
                     formatter:function(value,row,index){//根据value值设置通过状态
-                        if(value){
+                        if(value == 1){
+                            return '已审批';
+                        }else{
+                            return '未审批';
+                        }
+                    }},
+                {field:'status',title:'结果',align:'center',
+                    formatter:function(value,row,index){//根据value值设置通过状态
+                        if(value == 1){
                             return '已通过';
                         }else{
                             return '未通过';
                         }
                     }},
             ]
-            })
+        })
+        $.ajax({
+            url:'http://localhost:7744/person.html/getAllcorpus',
+            type:'POST',
+            data:{user_id:user_id},
+            dataType:'json',
+            success:function(userCorpus){
+                if(userCorpus){
+                    $('#table').bootstrapTable("load",userCorpus);
+                }
+            }
         })
     </script>
   </body>

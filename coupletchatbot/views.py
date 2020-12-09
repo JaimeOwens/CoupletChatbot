@@ -22,17 +22,18 @@ def login(request):
         login_form = forms.LoginForm(request.POST)
         if login_form.is_valid():
             email = login_form.cleaned_data['email']
-            password = make_password(login_form.cleaned_data['password'], "a")
+            password = login_form.cleaned_data['password']
             try:
                 user = models.User.objects.get(email=email)
                 if password == user.password:
                     rep = redirect('/index/')
+                    sessionid = str(uuid.uuid1())
                     rep.set_cookie('userid', user.userid)
-                    request.session[user.userid] = str(uuid.uuid1())
+                    rep.set_cookie('username', user.username)
+                    rep.set_cookie('uuid', sessionid)
+                    request.session[user.userid] = sessionid
                     return rep
                 else:
-                    print(user.password)
-                    print(make_password(password))
                     message = "密码不正确！"
             except:
                 message = "用户不存在！"
@@ -61,7 +62,7 @@ def register(request):
                     return render(request, 'register.html', locals())
                 else:
                     try:
-                        password = make_password(password1, "a")
+                        password = password1
                         User.objects.get_or_create(userid=None, email=email, username=username, password=password, avatar=None)
                     except Exception as e:
                         print(e)

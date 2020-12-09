@@ -67,7 +67,7 @@ def processSentence(raw_string, userid, sessionid):
         intent = intent_return
         Corpus.objects.create(id=None, userid=userid, uuid=sessionid, timestamp=datetime.datetime.now(), first_couplet=couplet_up[0], second_couplet=couplet_down, status=1, quality=1)
     else:
-        answer, _ = getDialogContext(raw_string)
+        answer, intent = getDialogContext(raw_string)
         answer = answer + "。"
     
     return answer, intent
@@ -80,6 +80,6 @@ def getBLEUandROUGH(couplet):
     response = response.read()
     result = response.decode('utf8')
     result.split('#')
-    bleu = float(result[0]) + random.uniform(0.01, 0.1)
-    rough = float(result[2]) + random.uniform(0.01, 0.1)
+    bleu = float(result[0])
+    rough = float(result[2])
     return bleu, rough
