@@ -24,7 +24,9 @@ class CoupletTestCase(TestCase):
     def __init__(self, methodName: str) -> None:
         super().__init__(methodName=methodName)
         with open('testdata/300.json', 'r', encoding='utf8') as fp:
-            self.jsondata = json.loads(fp.read())     
+            self.jsondata = json.loads(fp.read())  
+        self.dialog_set = set()   
+        self.test_count = 500
 
     def splitPoetry(self,content):
         content = content.split()
@@ -43,7 +45,13 @@ class CoupletTestCase(TestCase):
     def getTestCouplet(self):
         poetry_index = random.randint(0, 299)
         poetry = self.jsondata[poetry_index]
-        return self.splitPoetry(poetry['contents'])
+        poetry = self.splitPoetry(poetry['contents'])
+        while poetry in self.dialog_set:
+            poetry_index = random.randint(0, 299)
+            poetry = self.jsondata[poetry_index]
+            poetry = self.splitPoetry(poetry['contents'])
+        self.dialog_set.add(poetry)
+        return poetry
 
     def getDialog(self):
         intent = random.sample(dialogs.keys(), 1)
@@ -54,7 +62,7 @@ class CoupletTestCase(TestCase):
     def testAccuracy(self):
         workbook = xlwt.Workbook(encoding='utf-8')
         worksheet = workbook.add_sheet('sheet0')
-        for i in range(1000):
+        for i in range(self.test_count):
             print(i)
             dialog, intent = self.getDialog()
             couplet = self.getTestCouplet()
@@ -63,9 +71,9 @@ class CoupletTestCase(TestCase):
             print(dialog, intent, couplet)
             
             dialog_return, intent_return = util.getDialogContext(dialog)
-            bleu, rough = util.getBLEUandROUGH(couplet)
+            bleu, rougel, bert_p, bert_r, bert_f1, r_bert_p, r_bert_r, r_bert_f1 = util.getBLEUandROUGH(couplet)
             print(dialog_return, intent_return)
-            print(bleu, rough)
+            print(bleu, rougel, bert_p, bert_r, bert_f1, r_bert_p, r_bert_r, r_bert_f1)
 
             worksheet.write(i, 0, dialog)
             worksheet.write(i, 1, dialog_return)
@@ -73,7 +81,13 @@ class CoupletTestCase(TestCase):
             worksheet.write(i, 3, intent_return)
             worksheet.write(i, 4, couplet)
             worksheet.write(i, 5, bleu)
-            worksheet.write(i, 6, rough)
+            worksheet.write(i, 6, rougel)
+            worksheet.write(i, 7, bert_p)
+            worksheet.write(i, 8, bert_r)
+            worksheet.write(i, 9, bert_f1)
+            worksheet.write(i, 10, r_bert_p)
+            worksheet.write(i, 11, r_bert_r)
+            worksheet.write(i, 12, r_bert_f1)
             
             self.assertEqual(intent, intent_return)
 

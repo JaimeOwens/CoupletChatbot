@@ -79,7 +79,15 @@ def getBLEUandROUGH(couplet):
     response = request.urlopen(response)
     response = response.read()
     result = response.decode('utf8')
-    result.split('#')
-    bleu = float(result[0])
-    rough = float(result[2])
-    return bleu, rough
+    result = result.split('#')
+    # for i in range(len(result)):
+    #    print(result[i])
+    bleu = float(result[2])
+    rougel = float(result[4])
+    bert_p = float(result[6])
+    bert_r = float(result[8])
+    bert_f1 = float(result[10])
+    r_bert_p = float(result[12])
+    r_bert_r = float(result[14])
+    r_bert_f1 = float(result[16]) 
+    return bleu, rougel, bert_p, bert_r, bert_f1, r_bert_p, r_bert_r, r_bert_f1
