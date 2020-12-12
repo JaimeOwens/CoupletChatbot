@@ -18,6 +18,7 @@ from django.urls import path
 import coupletchatbot.views as chatbot_views
 
 urlpatterns = [
+    path('/', chatbot_views.index),
     path('admin/', admin.site.urls),
     path('index/', chatbot_views.index),
     path('login/', chatbot_views.login),
