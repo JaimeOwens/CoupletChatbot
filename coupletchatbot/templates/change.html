@@ -83,7 +83,7 @@
         })
         var timestamp = (new Date()).Format("yyyy-MM-dd hh:mm:ss.S000");
         $.ajax({
-            url:'http://localhost:7744/change.html/getUsercorpus',
+            url:'http://localhost:9001/change.html/getUsercorpus',
             data:{
                 user_id:user_id,
                 uuid:uuid,
@@ -152,7 +152,7 @@
                     };
                 console.log(data);
                 $.ajax({
-                    url:'http://localhost:7744/change.html/saveUsercorpus',
+                    url:'http://localhost:9001/change.html/saveUsercorpus',
                     method:"POST",
                     dataType:"json",
                     data:data,
