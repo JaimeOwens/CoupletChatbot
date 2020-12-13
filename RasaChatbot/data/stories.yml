@@ -1,0 +1,91 @@
+version: "2.0"
+
+stories:
+
+- story: greet
+  steps:
+    - intent: greet
+    - action: utter_greet
+    - intent: affirm
+    - action: utter_affirm
+
+- story: affirm
+  steps:
+    - intent: affirm
+    - action: utter_affirm
+
+- story: affirm with greet
+  steps:
+    - intent: greet
+    - action: utter_greet
+    - intent: affirm
+    - action: utter_affirm
+
+- story: deny
+  steps:
+    - intent: deny
+    - action: utter_deny
+
+- story: deny with greet
+  steps:
+    - intent: greet
+    - action: utter_greet
+    - intent: deny
+    - action: utter_deny
+
+- story: thanks
+  steps:
+    - intent: thanks
+    - action: utter_thanks
+
+- story: thanks with greet
+  steps:
+    - intent: greet
+    - action: utter_greet
+    - intent: thanks
+    - action: utter_thanks
+
+- story: whattodo
+  steps:
+    - intent: whattodo
+
+    - action: utter_whattodo
+
+- story: whattodo with greet
+  steps:
+    - intent: greet
+    - action: utter_greet
+    - intent: whattodo
+    - action: utter_whattodo
+
+- story: whoareyou
+  steps:
+    - intent: whoareyou
+    - action: utter_whoareyou
+  
+- story: whoareyou with greet
+  steps:
+    - intent: greet
+    - action: utter_greet
+    - intent: whoareyou
+    - action: utter_whoareyou
+
+- story: goodbye
+  steps:
+    - intent: goodbye
+    - action: utter_goodbye
+
+- story: couplet
+  steps:
+    - intent: couplet
+    - action: utter_couplet
+
+- story: goodanswer
+  steps:
+    - intent: goodanswer
+    - action: utter_goodanswer
+
+- story: badanswer
+  steps:
+    - intent: badanswer
+    - action: utter_badanswer

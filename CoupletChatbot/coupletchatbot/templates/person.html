@@ -76,7 +76,6 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="corpus" role="tabpanel" aria-labelledby="corpus-tab">
-                    <div>
                     <table class="table table-condensed table-hover" id="table">
                     <thead class="thead-light">
                         <tr>
@@ -88,8 +87,7 @@
                         </tr>
                     </thead>
                     </table>
-                    <button type="button" id="back" class="btn btn-primary mb-2" style="float:right;">Back</button>
-                    </div>
+                    <button type="button" id="back2" class="btn btn-primary mb-2" style="float:right;">Back</button>
                 </div>
             </div>
 	</div>
@@ -171,49 +169,52 @@
     }
     //查询对话记录
     $("#back").on('click',function(){
-			$(location).attr("href","/dialog/")
-        })
-                //表格渲染
-        $("#table").bootstrapTable({
-            method:'GET',//方法
-            pagination:true,//分页
-            sidePagination:'client',//指定在前端客户端分页
-            pageNumber:1,//页号
-            pageSize:10,//页面数据条数
-            pageList:[10,20,30,40,50],//分页列表
-            columns:[
-                {field:'id',title:'ID',},
-                {field:'first_couplet',title:'上联',align:'center'},
-                {field:'second_couplet',title:'下联',align:'center'},
-                {field:'status',title:'状态',align:'center',
-                    formatter:function(value,row,index){//根据value值设置通过状态
-                        if(value == 1){
-                            return '已审批';
-                        }else{
-                            return '未审批';
-                        }
-                    }},
-                {field:'status',title:'结果',align:'center',
-                    formatter:function(value,row,index){//根据value值设置通过状态
-                        if(value == 1){
-                            return '已通过';
-                        }else{
-                            return '未通过';
-                        }
-                    }},
-            ]
-        })
-        $.ajax({
-            url:'http://localhost:9001/person.html/getAllcorpus',
-            type:'POST',
-            data:{user_id:user_id},
-            dataType:'json',
-            success:function(userCorpus){
-                if(userCorpus){
-                    $('#table').bootstrapTable("load",userCorpus);
-                }
+        $(location).attr("href","/index/")
+    })
+    $("#back2").on('click',function(){
+        $(location).attr("href","/index/")
+    })
+            //表格渲染
+    $("#table").bootstrapTable({
+        method:'GET',//方法
+        pagination:true,//分页
+        sidePagination:'client',//指定在前端客户端分页
+        pageNumber:1,//页号
+        pageSize:10,//页面数据条数
+        pageList:[10,20,30,40,50],//分页列表
+        columns:[
+            {field:'id',title:'ID',},
+            {field:'first_couplet',title:'上联',align:'center'},
+            {field:'second_couplet',title:'下联',align:'center'},
+            {field:'status',title:'状态',align:'center',
+                formatter:function(value,row,index){//根据value值设置通过状态
+                    if(value == 1){
+                        return '已审批';
+                    }else{
+                        return '未审批';
+                    }
+                }},
+            {field:'status',title:'结果',align:'center',
+                formatter:function(value,row,index){//根据value值设置通过状态
+                    if(value == 1){
+                        return '已通过';
+                    }else{
+                        return '未通过';
+                    }
+                }},
+        ]
+    })
+    $.ajax({
+        url:'http://localhost:9001/person.html/getAllcorpus',
+        type:'POST',
+        data:{user_id:user_id},
+        dataType:'json',
+        success:function(userCorpus){
+            if(userCorpus){
+                $('#table').bootstrapTable("load",userCorpus);
             }
-        })
+        }
+    })
     </script>
   </body>
 </html>

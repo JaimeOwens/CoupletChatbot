@@ -1,0 +1,86 @@
+version: "2.0"
+
+intents:
+  - greet
+  - goodbye
+  - affirm
+  - deny
+  - thanks
+  - whoareyou
+  - whattodo
+  - couplet
+  - goodanswer
+  - badanswer
+
+responses:
+  utter_greet:
+  - text: "你好啊"
+  - text: "欢迎光临，来和我说话吧"
+  - text: "等你多时，今天想聊些什么呢"
+  - text: "好久不见，终于想起我啦"
+  - text: "初来乍到，想不想和我深入交流啊"
+
+  utter_goodbye:
+  - text: "再见，要不要留下你的足迹呢"
+  - text: "期待和你下次相聚"
+  - text: "下次再见，等你回来"
+  - text: "请为我留下宝贵的意见吧"
+  - text: "下次也想和你愉快的聊天哦"
+
+  utter_affirm:
+  - text: "嘿嘿嘿"
+  - text: "我说的没错吧"
+  - text: "嗯呢"
+  - text: "嘻嘻"
+  - text: "好的，更喜欢和你聊天了"
+
+  utter_deny:
+  - text: "嗯嗯，我会改进的"
+  - text: "哼，怎么就不行了"
+  - text: "55555"
+  - text: "小问题，我不会灰心的"
+  - text: "好吧，但是我会听的"
+
+  utter_thanks:
+  - text: "举手之劳，不成敬意"
+  - text: "小意思，您客气了"
+  - text: "收到鼓励，再接再厉"
+  - text: "客气啦，我应该做的"
+  - text: "you are welcome！"
+
+  utter_whoareyou:
+  - text: "我是AI对联机器人xiucai，来愉快地对话吧！"
+
+  utter_whattodo:
+  - text: "我可以支持聊天当中的对联生成，给你带来快乐哦。"
+
+  utter_couplet:
+  - text: "好的，这是我给出的下联，您看如何"
+  - text: "在下有一妙对，请君欣赏"
+  - text: "不如看看我的答案吧，是否符合您的胃口"
+  - text: "这是下联，您看是不是很不错"
+  - text: "我已经有了一个答案"
+  - text: "哈哈，小菜一碟难不倒我"
+  - text: "我灵机一动，想到了这个回答"
+  - text: "这个对联怎么样，我还能接招"
+  - text: "我的能力还是足以应付的"
+  - text: ""
+
+  utter_goodanswer:
+  - text: "感谢您的回答，我收到鼓励啦"
+  - text: "请允许我有一点点骄傲～"
+  - text: "好的，我会继续进步的"
+  - text: "你确定不是夸奖过头了吗"
+  - text: "开心开心，坚持努力"
+
+  utter_badanswer:
+  - text: "您说的很有道理，我会改进的"
+  - text: "是吗，那请您稍后在点评中指正我哦"
+  - text: "没问题，我会越来越好的"
+  - text: "不是吧，我这么努力了，还要被批评"
+  - text: "你可以说，但是我不一定听～"
+
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
